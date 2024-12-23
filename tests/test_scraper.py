@@ -3,8 +3,6 @@ import os
 from mark_scraper import scraper
 from unittest.mock import patch
 
-
-
 class TestScraper:
     @pytest.fixture
     def mock_web_page():
@@ -20,7 +18,7 @@ class TestScraper:
             yield _mock
 
     def test_page_scrape(mock_web_page):
-        """Basic interface test"""
+        """Basic python interface test"""
 
         html_content = """
         <!DOCTYPE html>
