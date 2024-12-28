@@ -15,7 +15,7 @@ def command(url):
     Markdown Scraper CLI
 
     Usage
-    mark-scraper http://example.com
+    mark_scraper http://example.com
     """
     page = scraper.get(url)
     click.echo(page.body)

@@ -1,6 +1,7 @@
 import pyppeteer
 import asyncio
 import click
+import re
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 from .page import Page
@@ -15,7 +16,7 @@ def get(url: str) -> Page:
     page = Page(url=url, body=markdown, html=raw_html)
 
     if title := clean_soup.find('title'):
-        page.with_title(title.text)
+        page.title = title.text
 
     return page
 
@@ -23,11 +24,11 @@ def get_rendered_html(url: str) -> str:
     try:
         return asyncio.run(_render_page(url))
     except pyppeteer.errors.BrowserError:
-        click.echo(f"BrowserError while fetching {url}")
-        return "BrowserError while fetching"
+        click.echo(f"BrowserError while fetching {url}", err=True)
+        return None
     except pyppeteer.errors.TimeoutError:
-        click.echo(f"Timeout while fetching {url}")
-        return "Timeout while fetching page"
+        click.echo(f"Timeout while fetching {url}", err=True)
+        return None
 
 async def _render_page(url: str) -> str:
     browser = None

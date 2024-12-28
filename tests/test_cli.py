@@ -9,13 +9,13 @@ class TestCLI:
         self.default_url = "http://example.com"
 
     @pytest.fixture
-    def mock_stdout():
+    def mock_stdout(self):
         with patch('click.echo') as mock:
             yield mock
+    
     @pytest.fixture
-    def mock_get_url(document_obj):
+    def mock_get_url(self):
         with patch('mark_scraper.scraper.get') as mock:
-            mock.return_value = document_obj
             yield mock
 
     def test_get_url(self, mock_stdout, mock_get_url):
@@ -27,13 +27,13 @@ class TestCLI:
         
         My content
         """)
-        page = Page.new(
+        page = Page(
             title="Page Title",
             url="http://example.com",
             body=page_body
         )
 
-        mock_get_url(page)
+        mock_get_url.return_value = page
 
         cli.command([str(self.default_url)], None, None, False)
 

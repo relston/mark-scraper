@@ -4,4 +4,15 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "asyncio>=3.4.3",
+    "bs4>=0.0.2",
+    "click>=8.1.8",
+    "markdownify>=0.14.1",
+    "pyppeteer>=2.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+]

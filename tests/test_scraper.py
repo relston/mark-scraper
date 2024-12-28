@@ -1,11 +1,12 @@
 import pytest
 import os
+import re
 from mark_scraper import scraper
 from unittest.mock import patch
 
 class TestScraper:
     @pytest.fixture
-    def mock_web_page():
+    def mock_web_page(self):
         url_to_content = {}
 
         def _mock(url, page_content):
@@ -17,7 +18,7 @@ class TestScraper:
             mock.side_effect = side_effect
             yield _mock
 
-    def test_page_scrape(mock_web_page):
+    def test_page_scrape(self, mock_web_page):
         """Basic python interface test"""
 
         html_content = """
