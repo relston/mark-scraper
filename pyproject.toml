@@ -12,9 +12,15 @@ dependencies = [
     "pyppeteer>=2.0.0",
 ]
 
+[project.scripts]
+mark-scraper = "mark_scraper:cli.command"
+
 [dependency-groups]
 dev = [
     "pytest>=8.3.4",
 ]
 [tool.pytest.ini_options]
 pythonpath = ["."]
+
+[tool.uv]
+package = true

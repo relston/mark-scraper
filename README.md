@@ -3,11 +3,18 @@ CLI to scrape webpages and return them in markdown format
 
 ```bash
 mark-scraper http://example.com
-# # Example
-# This is an example website
+# Example Domain
+# ==============
+
+# This domain is for use in illustrative examples in documents. You may use this
+# domain in literature without prior coordination or asking for permission.
+
+# [More information...](https://www.iana.org/domains/example)
 ```
 
 # TODO
+Here is a list of features I would like to add to this project
+
 - Also save html
     - `mark-scraper -h/--html example.com.html http://example.com > example.com.md`
 - Take a screen shot of web page
@@ -22,6 +29,5 @@ mark-scraper http://example.com
 ```bash
 uv sync
 uv run pytest
+uv run mark-scraper https://github.com/relston/mark
 ```
-
-https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
