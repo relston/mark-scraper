@@ -24,20 +24,4 @@ uv sync
 uv run pytest
 ```
 
-
-# Issue Check PYTHONPATH
-Ensure that the directory containing your package is in the `PYTHONPATH`. This can be temporarily set in the terminal before running tests:
-```bash
-export PYTHONPATH=${PYTHONPATH}:/home/relston/projects/mark_scraper
-```
-Add a configuration in `pyproject.toml` for `pytest` to include the source directory:
-
-```toml
-[tool.pytest.ini_options]
-pythonpath = ["."]
-```
-
-This will make `pytest` aware of modules in the current directory.
-
-
 https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
