@@ -12,9 +12,15 @@ mark-scraper http://example.com
 # [More information...](https://www.iana.org/domains/example)
 ```
 
+# Installation
+```bash
+pipx install mark-scraper
+# or
+uv tool install mark-scraper
+```
+
 # TODO
 Here is a list of features I would like to add to this project
-
 - Also save html
     - `mark-scraper -h/--html example.com.html http://example.com > example.com.md`
 - Take a screen shot of web page
@@ -29,5 +35,5 @@ Here is a list of features I would like to add to this project
 ```bash
 uv sync
 uv run pytest
-uv run mark-scraper https://github.com/relston/mark
+uv run mark-scraper http://example.com
 ```
