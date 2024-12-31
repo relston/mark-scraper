@@ -17,5 +17,12 @@ def command(url):
     Usage
     mark_scraper http://example.com
     """
-    page = scraper.get(url)
-    click.echo(page.body)
+    try:
+        page = scraper.get(url)
+        click.echo(page.body)
+    except scraper.BrowserError:
+        click.echo(f"BrowserError while fetching {url}", err=True)
+        exit(1)
+    except scraper.TimeoutError:
+        click.echo(f"Timeout while fetching {url}", err=True)
+        exit(1)

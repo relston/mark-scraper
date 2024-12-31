@@ -6,6 +6,11 @@ from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 from .page import Page
 
+class TimeoutError(Exception):
+    pass
+class BrowserError(Exception):
+    pass
+
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' + \
     ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.198 Safari/537.36'
 
@@ -24,11 +29,9 @@ def get_rendered_html(url: str) -> str:
     try:
         return asyncio.run(_render_page(url))
     except pyppeteer.errors.BrowserError:
-        click.echo(f"BrowserError while fetching {url}", err=True)
-        return None
+        raise TimeoutError(f"BrowserError while fetching {url}")
     except pyppeteer.errors.TimeoutError:
-        click.echo(f"Timeout while fetching {url}", err=True)
-        return None
+        raise TimeoutError(f"Timeout while fetching {url}")
 
 async def _render_page(url: str) -> str:
     browser = None
