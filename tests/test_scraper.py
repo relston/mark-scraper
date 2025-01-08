@@ -1,6 +1,4 @@
 import pytest
-import os
-import re
 from mark_scraper import scraper
 from unittest.mock import patch
 

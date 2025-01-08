@@ -5,6 +5,7 @@ import re
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 from .page import Page
+from IPython import embed
 
 class TimeoutError(Exception):
     pass
@@ -50,11 +51,18 @@ def _clean_soup_from_html(html: str) -> BeautifulSoup:
     # warnings.filterwarnings("ignore")
 
     soup = BeautifulSoup(html, 'html.parser')
-
     # List of tags to decompose
     tags_to_decompose = ['script', 'meta', 'link', 'style']
 
     for tag in soup.find_all(True):
+        # Decompose unwanted tags
+        if tag.name in tags_to_decompose:
+            tag.decompose()
+            continue
+        
+        if not tag.attrs:
+            continue
+
         # Remove class attributes
         if 'class' in tag.attrs:
             del tag['class']
@@ -62,10 +70,6 @@ def _clean_soup_from_html(html: str) -> BeautifulSoup:
         # Remove style attributes
         if 'style' in tag.attrs:
             del tag['style']
-
-        # Decompose unwanted tags
-        if tag.name in tags_to_decompose:
-            tag.decompose()
 
     return soup
 
