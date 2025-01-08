@@ -5,7 +5,6 @@ import re
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 from .page import Page
-from IPython import embed
 
 class TimeoutError(Exception):
     pass
