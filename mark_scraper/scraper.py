@@ -1,9 +1,9 @@
-import pyppeteer
-import asyncio
-import click
+from playwright.sync_api import sync_playwright
+import playwright
 import re
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
+import playwright.sync_api
 from .page import Page
 
 class TimeoutError(Exception):
@@ -27,26 +27,26 @@ def get(url: str) -> Page:
 
 def get_rendered_html(url: str) -> str:
     try:
-        return asyncio.run(_render_page(url))
-    except pyppeteer.errors.BrowserError:
-        raise TimeoutError(f"BrowserError while fetching {url}")
-    except pyppeteer.errors.TimeoutError:
+        return _render_page(url)
+    except playwright.sync_api.Error:
+        raise BrowserError(f"BrowserError while fetching {url}")
+    except playwright.sync_api.TimeoutError:
         raise TimeoutError(f"Timeout while fetching {url}")
 
-async def _render_page(url: str) -> str:
-    browser = None
-    try:
-        browser = await pyppeteer.launch()
-        page = await browser.newPage()
-        await page.setUserAgent(DEFAULT_USER_AGENT)
-        # https://pyppeteer.github.io/pyppeteer/_modules/pyppeteer/page.html#Page.goto
-        await page.goto(url, {'waitUntil' : 'networkidle2'})
-        # await page.goto(url, {'waitUntil' : 'domcontentloaded'})
-        rendered_html = await page.content()
-    finally:
-        if browser:
-            await browser.close()
-    return rendered_html
+def _render_page(url: str) -> str:
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)  # You can also use .firefox or .webkit
+        page = browser.new_page()
+        page.goto(url, wait_until='networkidle')
+        page_content = page.content()  # Fetch the page's HTML content
+        
+        frames = page.frames
+        for frame in frames:
+            page_content += frame.content()
+        
+        # page.screenshot(path="example.png")
+        browser.close()
+        return page_content
 
 def _clean_soup_from_html(html: str) -> BeautifulSoup:
     # warnings.filterwarnings("ignore")

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-01-20
+### Changed
+- Replaced pyppeteer with playwright as a backend
+
 ## [0.1.3] - 2025-01-20
 ### Changed
 - Scraper now waits to [networkidle2](https://pyppeteer.github.io/pyppeteer/_modules/pyppeteer/page.html#Page.goto) before returning
