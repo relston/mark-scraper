@@ -28,21 +28,27 @@ def get(url: str) -> Page:
 def get_rendered_html(url: str) -> str:
     try:
         return _render_page(url)
-    except playwright.sync_api.Error:
+    except playwright.sync_api.Error as e:
+        print(f"Error: {e}")
         raise BrowserError(f"BrowserError while fetching {url}")
     except playwright.sync_api.TimeoutError:
         raise TimeoutError(f"Timeout while fetching {url}")
 
 def _render_page(url: str) -> str:
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)  # You can also use .firefox or .webkit
+        browser = p.chromium.launch()
         page = browser.new_page()
-        page.goto(url, wait_until='networkidle')
-        page_content = page.content()  # Fetch the page's HTML content
+        # page.on('request', lambda request: print(f'Request: {request.url}'))
+        # page.on('response', lambda response: print(f'Response: {response.url}'))
+        # page.on('domcontentloaded', lambda page: print(f'domcontentloaded'))
+        # page.on('load', lambda page: print(f'load'))
+        page.goto(url, wait_until='load')
+        page_content = page.content()
         
         frames = page.frames
         for frame in frames:
-            page_content += frame.content()
+            if frame.url:
+                page_content += frame.content()
         
         # page.screenshot(path="example.png")
         browser.close()
