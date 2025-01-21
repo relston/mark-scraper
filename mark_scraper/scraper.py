@@ -39,7 +39,9 @@ async def _render_page(url: str) -> str:
         browser = await pyppeteer.launch()
         page = await browser.newPage()
         await page.setUserAgent(DEFAULT_USER_AGENT)
-        await page.goto(url)
+        # https://pyppeteer.github.io/pyppeteer/_modules/pyppeteer/page.html#Page.goto
+        await page.goto(url, {'waitUntil' : 'networkidle2'})
+        # await page.goto(url, {'waitUntil' : 'domcontentloaded'})
         rendered_html = await page.content()
     finally:
         if browser:
