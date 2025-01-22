@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-01-21
+### Fixed
+- Improved reliability of scrapped content
+### Added
+- Page Scrolls to load viewport based content before exiting
+- Debug flags added to cli and `scraper.get` for testing purposes
+    - Print network activity and launch chromium browser
+
 ## [0.2.1] - 2025-01-20
 ### Fixed
 - No longer hanging trying to get content from emptry frames

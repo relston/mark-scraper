@@ -9,8 +9,10 @@ except PackageNotFoundError:
 
 @click.command()
 @click.argument('url', type=click.STRING)
+@click.option('--debug', '-d', is_flag=True, help='Open browser window and print network events during scrap')
+@click.option('--silent', '-s', is_flag=True, help="Don't return the scraped content")
 @click.version_option(version=package_version)
-def command(url):
+def command(url, debug, silent):
     """
     Markdown Scraper CLI
 
@@ -18,8 +20,9 @@ def command(url):
     mark_scraper http://example.com
     """
     try:
-        page = scraper.get(url)
-        click.echo(page.body)
+        page = scraper.get(url, debug)
+        if not silent:
+            click.echo(page.body)
     except scraper.BrowserError:
         click.echo(f"BrowserError while fetching {url}", err=True)
         exit(1)

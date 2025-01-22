@@ -11,7 +11,7 @@ class TestScraper:
             url_to_content[url] = page_content
 
         with patch('mark_scraper.scraper.get_rendered_html') as mock:
-            def side_effect(url):
+            def side_effect(url, _debug):
                 return url_to_content[url]
             mock.side_effect = side_effect
             yield _mock

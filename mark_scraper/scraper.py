@@ -14,8 +14,8 @@ class BrowserError(Exception):
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' + \
     ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.198 Safari/537.36'
 
-def get(url: str) -> Page:
-    raw_html = get_rendered_html(url)
+def get(url: str, debug: bool = False) -> Page:
+    raw_html = get_rendered_html(url, debug)
     clean_soup = _clean_soup_from_html(raw_html)
     markdown = _markdown_from_soup(clean_soup)
     page = Page(url=url, body=markdown, html=raw_html)
@@ -25,29 +25,39 @@ def get(url: str) -> Page:
 
     return page
 
-def get_rendered_html(url: str) -> str:
+def get_rendered_html(url: str, debug: bool) -> str:
     try:
-        return _render_page(url)
+        return _render_page(url, debug)
     except playwright.sync_api.Error as e:
         print(f"Error: {e}")
         raise BrowserError(f"BrowserError while fetching {url}")
     except playwright.sync_api.TimeoutError:
         raise TimeoutError(f"Timeout while fetching {url}")
 
-def _render_page(url: str) -> str:
+def _render_page(url: str, debug: bool) -> str:
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(headless=not debug)
         page = browser.new_page()
-        # page.on('request', lambda request: print(f'Request: {request.url}'))
-        # page.on('response', lambda response: print(f'Response: {response.url}'))
-        # page.on('domcontentloaded', lambda page: print(f'domcontentloaded'))
-        # page.on('load', lambda page: print(f'load'))
-        page.goto(url, wait_until='load')
+        if debug:
+            page.on('request', lambda request: print(f'Request: {request.url}'))
+            page.on('response', lambda response: print(f'Response: {response.url}'))
+            page.on('domcontentloaded', lambda page: print(f'domcontentloaded'))
+            page.on('load', lambda page: print(f'load'))
+        
+        try:
+            page.goto(url, wait_until='networkidle', timeout=10000)
+        except playwright.sync_api.Error as e:
+            # Sometimes networkidle never comes, try and scrap it anyway
+            pass
+
+        # Scroll the page to try and load any content based on viewports
+        page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        page.wait_for_timeout(500)
         page_content = page.content()
         
         frames = page.frames
         for frame in frames:
-            if frame.url:
+            if frame.url and frame.url != page.url:
                 page_content += frame.content()
         
         # page.screenshot(path="example.png")
